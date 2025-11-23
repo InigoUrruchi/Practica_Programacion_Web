@@ -50,23 +50,23 @@
                     "content-type": "application/json"
                 },
                 body: JSON.stringify({ email: email, password: contraseña })
-
             })
-                .then(response =>{
+
+                .then(response => {
                     if (!response.ok) {
                         throw new Error("Error en la petición: " + response.status);
                     }
+                    localStorage.setItem("email",email)
                     return response.json()
                 })
 
                 .then(data => {
-                        console.log(data)
-                        localStorage.set("token", data.token)
-                        localStorage.set("user",data.user)
-                        console.log(localStorage)
-                    })
+                    console.log(data)
+                    localStorage.setItem("token", data.access_token)
+                    localStorage.setItem("user", data.user)
+                    console.log(localStorage)
+                })
         }
     </script>
 </body>
-
 </html>
