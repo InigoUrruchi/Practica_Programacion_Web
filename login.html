@@ -56,13 +56,13 @@
                     if (!response.ok) {
                         throw new Error("Error en la petición: " + response.status);
                     }
-                    localStorage.setItem("email",email)
                     return response.json()
                 })
 
                 .then(data => {
                     console.log(data)
                     localStorage.setItem("token", data.access_token)
+                    localStorage.setItem("email",email)
                     localStorage.setItem("user", data.user)
                     console.log(localStorage)
                 })
