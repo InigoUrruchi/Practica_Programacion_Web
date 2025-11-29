@@ -18,26 +18,40 @@
         <form onsubmit="registrar(event)">
             <div class="mx-auto">
                 <label class="form-label">Nombre de usuario</label>
-                <input id="usuario" type="text" class="form-control" required placeholder="Username" required>
+                <input id="usuario" type="text" class="form-control" placeholder="Username">
+                <div class="invalid-feedback">
+                    El usuario no es valido.
+                </div>
             </div>
             <div class="mx-auto">
                 <label class="form-label">Correo electronico</label>
-                <input id="email" type="email" class="form-control" required placeholder="Email" required>
+                <input id="email" type="email" class="form-control" placeholder="Email">
+                <div class="invalid-feedback">
+                    El correo electronico no es valido.
+                </div>
             </div>
 
             <div class="mx-auto mt-3">
                 <label class="form-label">Contraseña</label>
-                <input id="contraseña" type="password" class="form-control" required placeholder="Contraseña" required>
+                <input id="contraseña" type="password" class="form-control" placeholder="Contraseña">
+                <div class="invalid-feedback">
+                    La contraseña debe contener al menos 6 caracteres.
+                </div>
             </div>
             <div class="mx-auto mt-3">
                 <label class="form-label">Confirmar contraseña</label>
-                <input id="confirmacion" type="password" class="form-control" required
-                    placeholder="Vuelva a escribir la contraseña" required>
+                <input id="confirmacion" type="password" class="form-control" placeholder="Vuelva a escribir la contraseña">
+                <div class="invalid-feedback">
+                    Las contraseñas deben de ser iguales.
+                </div>
             </div>
 
             <div class="mx-auto mt-3">
                 <label class="form-label">Coordenadas</label>
-                <input id="coordenadas" type="text" class="form-control" required placeholder="Coordenadas (Lat , Lon)">
+                <input id="coordenadas" type="text" class="form-control" placeholder="Coordenadas (Lat , Lon)">
+                <div class="invalid-feedback">
+                    Las coordenadas no tienen un formato valido.
+                </div>
             </div>
             <div style="display:flex; justify-content: center;" class="mt-3">
                 <button class="btn btn-primary" onclick="registrar()">Registrarse</button>
@@ -47,10 +61,12 @@
     <script>
 
         function registrar(event) {
+            errores = false
+
             if (event) event.preventDefault();
-            usuario = document.getElementById("nombre")
+            user = document.getElementById("usuario").value
             email = document.getElementById("email").value
-            contraseña = document.getElementById("contraseña").value
+            password = document.getElementById("contraseña").value
             confirmacion = document.getElementById("confirmacion").value
             coordenadas = document.getElementById("coordenadas").value
 
@@ -58,27 +74,78 @@
             lon = coordenadas.split(",")[1]
 
             function validar_coordenadas() {
-                const regex = /-^?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/
-                regex.test(coordenadas)
+                const regex = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/
+                return regex.test(coordenadas)
             }
 
+            function validar_correo(){
+                const regex = /^[a-z]+[@]+[a-z]+[.]+[a-z]+$/
+                return regex.test(email)
+            }
 
-            fetch("https://practicaprogramacionweb.duckdns.org/users/register", {
-                method: 'POST',
-                headers: {
-                    "accept": "/",
-                    "content-type": "application/json"
-                },
-                body: JSON.stringify({ username: usuario, email: email, password: contraseña, latitude: lat, longitude: long})
-            })
+            if(!user) {
+                document.getElementById("usuario").classList.add("is-invalid")
+                errores = true
+            }
 
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Error en la petición: " + response.status);
-                    }
-                    return response.json()
+            else {
+                document.getElementById("usuario").classList.remove("is-invalid")
+            }
+
+            if (!validar_correo()) {
+                document.getElementById("email").classList.add("is-invalid")
+                errores = true
+            }
+
+            else {
+                document.getElementById("email").classList.remove("is-invalid")
+            }
+
+            if(password.length < 6) {
+                document.getElementById("contraseña").classList.add("is-invalid")
+                errores = true
+            }
+            
+            else {
+                document.getElementById("contraseña").classList.remove("is-invalid")
+            }
+
+            if (!validar_coordenadas()) {
+                document.getElementById("coordenadas").classList.add("is-invalid")
+                errores = true
+            }
+
+            else {
+                document.getElementById("coordenadas").classList.remove("is-invalid")
+            }
+
+            if (password != confirmacion) {
+                document.getElementById("confirmacion").classList.add("is-invalid")
+                errores = true
+            }
+
+            else {
+                document.getElementById("confirmacion").classList.remove("is-invalid")
+            }
+            if (!errores) {
+                fetch("https://practicaprogramacionweb.duckdns.org/users/register", {
+                    method: 'POST',
+                    headers: {
+                        "accept": "/",
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify({ username: user, email: email, password: password, latitude: lat, longitude: lon})
                 })
+
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error en la petición: " + response.status);
+                        }
+                        return response.json()
+                    })
+            }
         }
+
     </script>
 </body>
 
