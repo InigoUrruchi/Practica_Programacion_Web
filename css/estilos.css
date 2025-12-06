@@ -1,0 +1,27 @@
+.login {
+    background-color: rgba(128, 128, 128, 0.521);
+}
+
+.contenedor_productos {
+    width: 70%;
+    margin: auto;
+    height: 80%;
+}
+
+table {
+    table-layout: fixed; 
+    border-collapse: collapse;
+    border: 2px black solid;
+}
+
+td {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+}
+
+td img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
