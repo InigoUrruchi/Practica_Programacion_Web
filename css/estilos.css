@@ -16,18 +16,18 @@ html, body {
     margin: auto;
 }
 
-#table {
+#table, #table_carrito {
     table-layout: auto;
     border-collapse: separate;
     border-spacing: 0px 20px;
     margin-top: 0px;
 }
 
-#table thead {
+#table thead, #table_carrito thead {
     display: none;
 }
 
-#table td:first-child {
+#table td:first-child, #table_carrito td:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     width:1%;
@@ -35,7 +35,7 @@ html, body {
     padding: 0px;
 }
 
-#table td:nth-child(2) {
+#table td:nth-child(2), #table_carrito td:nth-child(2) {
     width:max-content;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -74,14 +74,14 @@ td img {
     color: green;
 }
 
-.boton_carrito {
+.boton_carrito, .boton_comprar {
     width: 150px;
     height: 50px;
     background-color: orange;
     border: 1px solid orange;
 }
 
-#buscador {
+#buscador, #buscador_carrito {
     width: 100%;
     height: 50px;
     margin: auto;
@@ -108,7 +108,7 @@ td img {
     display: none;
 }
 
-#ordenPrecio {
+#ordenPrecio, #ordenPrecio_carrito {
     margin-left: auto;
     margin-top: 5px;
 
