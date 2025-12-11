@@ -3,31 +3,105 @@
 }
 
 .contenedor_productos {
-    width: 70%;
+    width: 65%;
     margin: auto;
     height: 80%;
 }
 
-table {
-    table-layout: fixed; 
-    border-collapse: collapse;
-    border: 2px black solid;
+#table {
+    table-layout: auto;
+    border-collapse: separate;
+    border-spacing: 0px 20px;
+    margin-top: 0px;
+}
+
+#table thead {
+    display: none;
+}
+
+#table td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    width:1%;
+    height: 1%;
+    padding: 0px;
+}
+
+#table td:nth-child(2) {
+    width: auto;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding-left: 50px;
+    padding-bottom: 5px;
+    padding-top:5px;
 }
 
 td {
-    width: 300px;
-    height: 300px;
-    overflow: hidden;
+    border: 4px solid gray;
 }
 
 td img {
+    display: block;
     width: 300px;
     height: 300px;
     object-fit: cover;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+#precio_prod {
+    font-size:xx-large;
+    text-shadow: 2px black;
+}
+
+#nombre_prod {
+    text-transform: capitalize;
+    font-size: x-large;
+    font-weight: bold;
+
+}
+
+#estado_prod {
+    font-weight: bold;
+    color: green;
 }
 
 .boton_carrito {
     width: 150px;
     height: 50px;
     background-color: orange;
+    border: 1px solid orange;
+}
+
+#buscador {
+    width: 100%;
+    height: 50px;
+    margin: auto;
+    margin-top: 50px;
+    border: 1px solid orange;
+}
+
+#dropdown {
+    background-color: orange;
+    height: 50px;
+    width: 100%;
+    margin-top: 50px;
+}
+
+#filtro_categorias {
+    width: 10%;
+}
+
+#busqueda {
+    width: 90%;
+}
+
+.dataTables_filter {
+    display: none;
+}
+
+#ordenPrecio {
+    margin-left: auto;
+    margin-top: 5px;
+
 }
