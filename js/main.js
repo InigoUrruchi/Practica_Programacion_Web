@@ -1,3 +1,12 @@
+// ✅ Cargar el navbar en todas las páginas
+window.addEventListener("DOMContentLoaded", () => {
+    fetch("navbar.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("navbar-container").innerHTML = html;
+        })
+});
+
 
 /*Crear el filtro por categorias*/
 $.fn.dataTable.ext.search.push(function(settings, data) {

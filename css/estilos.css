@@ -2,10 +2,18 @@
     background-color: rgba(128, 128, 128, 0.521);
 }
 
+html, body {
+    height: 100%;
+}
+
 .contenedor_productos {
     width: 65%;
     margin: auto;
-    height: 80%;
+}
+
+.contenedor_filtros {
+    width: 65%;
+    margin: auto;
 }
 
 #table {
@@ -28,7 +36,7 @@
 }
 
 #table td:nth-child(2) {
-    width: auto;
+    width:max-content;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     padding-left: 50px;
@@ -104,4 +112,42 @@ td img {
     margin-left: auto;
     margin-top: 5px;
 
+}
+
+#navbar-container {
+    width: 15%;
+    background-color: rgb(70, 68, 68);
+    align-self: stretch;
+    height: auto;
+}
+
+#navbar-container > .d-flex,
+#navbar-container .navbar {
+    height: 100%;
+}
+
+.navbar {
+    background-color: rgb(70, 68, 68);
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    padding-top: 2px;
+}
+
+.nav-link {
+    color: white;
+}
+
+.nav-link:hover {
+    color: orange;
+}
+
+.nav-link:focus {
+    color: orange;
+    border: 2px solid white;
+}
+
+
+#contenedor_principal {
+    align-items: stretch;
+    min-height: 100vh;
 }

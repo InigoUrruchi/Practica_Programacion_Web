@@ -24,69 +24,72 @@
 </head>
 
 <body>
-    <div class="contenedor_productos table-responsive">
-        <div class="d-flex">
-            <div class="dropdown" id="filtro_categorias">
-                <button id="dropdown" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownCategorias"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    Categorías
-                </button>
-                <ul class="dropdown-menu p-3" aria-labelledby="dropdownCategorias" style="min-width: 250px;">
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" name="categoria" type="checkbox" value="sin estrenar">
-                            <label class="form-check-label">Sin estrenar</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" name="categoria" type="checkbox" value="como nuevo">
-                            <label class="form-check-label">Como nuevo</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" name="categoria" type="checkbox" value="en buen estado">
-                            <label class="form-check-label">En buen estado</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" name="categoria" type="checkbox" value="aceptable">
-                            <label class="form-check-label">Aceptable</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" name="categoria" type="checkbox" value="averiado"
-                                id="catSegundaMano">
-                            <label class="form-check-label">Averiado</label>
-                        </div>
-                    </li>
-                </ul>
+    <div id= "contenedor_principal" class="d-flex">
+        <div id="navbar-container"></div>
+        <div class="contenedor_productos table-responsive">
+            <div class="d-flex responsive" id="contenedor_filtros">
+                <div class="dropdown" id="filtro_categorias">
+                    <button id="dropdown" class="btn btn-secondary dropdown-toggle" type="button"
+                        id="dropdownCategorias" data-bs-toggle="dropdown" aria-expanded="false">
+                        Categorías
+                    </button>
+                    <ul class="dropdown-menu p-3" aria-labelledby="dropdownCategorias" style="min-width: 250px;">
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" name="categoria" type="checkbox" value="sin estrenar">
+                                <label class="form-check-label">Sin estrenar</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" name="categoria" type="checkbox" value="como nuevo">
+                                <label class="form-check-label">Como nuevo</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" name="categoria" type="checkbox" value="en buen estado">
+                                <label class="form-check-label">En buen estado</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" name="categoria" type="checkbox" value="aceptable">
+                                <label class="form-check-label">Aceptable</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" name="categoria" type="checkbox" value="averiado"
+                                    id="catSegundaMano">
+                                <label class="form-check-label">Averiado</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div id="busqueda">
+                    <input type="text" class="form-control" name="buscador" id="buscador">
+                </div>
             </div>
-            <div id="busqueda">
-                <input type="text" class="form-control" name="buscador" id="buscador">
+
+            <div id="ordenar_precio" class="d-flex">
+                <button id="ordenPrecio" class="btn btn-outline-primary btn-sm">Precio ↑</button>
             </div>
-        </div>
 
-        <div id = "ordenar_precio" class="d-flex">
-            <button id="ordenPrecio" class="btn btn-outline-primary btn-sm">Precio ↑</button>
+            <table id="table">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Descripción</th>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Categoría</th>
+                    </tr>
+                </thead>
+                <tbody id="body">
+                </tbody>
+            </table>
         </div>
-
-        <table id="table">
-            <thead>
-                <tr>
-                    <th>Imagen</th>
-                    <th>Descripción</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Categoría</th>
-                </tr>
-            </thead>
-            <tbody id="body">
-            </tbody>
-        </table>
     </div>
     <script src="/js/main.js"></script>
 </body>
