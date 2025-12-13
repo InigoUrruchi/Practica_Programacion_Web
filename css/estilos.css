@@ -16,18 +16,18 @@ html, body {
     margin: auto;
 }
 
-#table, #table_carrito {
+#table, #table_carrito, #table_mis_productos {
     table-layout: auto;
     border-collapse: separate;
     border-spacing: 0px 20px;
     margin-top: 0px;
 }
 
-#table thead, #table_carrito thead {
+#table thead, #table_carrito thead #table_mis_productos thead  {
     display: none;
 }
 
-#table td:first-child, #table_carrito td:first-child {
+#table td:first-child, #table_carrito td:first-child, #table_mis_productos td:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     width:1%;
@@ -35,7 +35,7 @@ html, body {
     padding: 0px;
 }
 
-#table td:nth-child(2), #table_carrito td:nth-child(2) {
+#table td:nth-child(2), #table_carrito td:nth-child(2), #table_mis_productos td:nth-child(2) {
     width:max-content;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -74,7 +74,7 @@ td img {
     color: green;
 }
 
-.boton_carrito, .boton_comprar {
+.boton_carrito, .boton_comprar, .boton_editar {
     width: 150px;
     height: 50px;
     background-color: orange;
@@ -87,7 +87,7 @@ td img {
     border: 1px solid orange;
 }
 
-#buscador_productos, #buscador_carrito {
+#buscador_productos, #buscador_carrito, #buscador_mis_productos {
     width: 100%;
     height: 50px;
     margin: auto;
@@ -114,7 +114,7 @@ td img {
     display: none;
 }
 
-#orden_precio_productos, #orden_precio_carrito {
+#orden_precio_productos, #orden_precio_carrito, #orden_precio_mis_productos {
     margin-left: auto;
     margin-top: 5px;
 

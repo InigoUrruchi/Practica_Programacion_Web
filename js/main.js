@@ -73,19 +73,18 @@ function carrito() {
     if (productos_carrito == null || productos_carrito.length == 0) {
         console.log("carrito vacio");
         const tabla = document.getElementById("table_carrito");
-
-    if (tabla) {
-        tabla.style.display = "none";
-    }
+    
+        if (tabla) {
+            tabla.style.display = "none";
+        }
     
     const mensaje = document.createElement("p");
     mensaje.innerText = "El carrito está vacío.";
     mensaje.classList.add("fs-4", "text-muted");
     const contenedorMensaje = document.getElementById("mensaje_carrito_vacio");
     contenedorMensaje.appendChild(mensaje);
-    
     return;
-}
+    }
 
     fetches = productos_carrito.map(producto_id =>
         fetch(`https://practicaprogramacionweb.duckdns.org/products/${producto_id}`, {
@@ -143,6 +142,61 @@ function carrito() {
     });
 }
 
+function mis_productos() {
+    token = localStorage.getItem("token")
+    user = localStorage.getItem("user")
+
+    fetch("https://practicaprogramacionweb.duckdns.org/products", {
+        method: 'GET',
+        headers: {
+            "accept": "/",
+            "Authorization": `Bearer ${token}`,
+        },
+    })
+
+    .then(response => response.json())
+
+    .then(productos_json => {
+        productos_usuario = productos_json.filter(producto => producto.idUser == user);
+        
+        if (productos_usuario.length == 0) {
+            const tabla = document.getElementById("table_mis_productos");
+            if (tabla) {
+                tabla.style.display = "none";
+            }
+            const mensaje = document.getElementById("no_productos");
+            mensaje.style.display = "block";
+            return;
+        }
+
+        productos_usuario.forEach(producto => {
+            generar_fila_producto(producto, "body_mis_productos");
+        });
+
+
+        /*Inicializar la tabla */
+        tabla_mis_productos = new DataTable("#table_mis_productos", {
+            info: false,
+            pageLength: 10,
+            lengthChange: false,
+            responsive: true,
+            columnDefs: [
+                { targets: 2, visible: false, searchable: true },
+                { targets: 3, visible: false, orderable: true },
+                { targets: 4, visible: false },
+                { targets: 1, orderData: [3] },
+                { targets: 0, orderable: false },
+            ]
+        })
+        buscador = document.getElementById("buscador_mis_productos");
+        ordenar_precio = document.getElementById("orden_precio_mis_productos");
+
+        filtrar_categoria(tabla_mis_productos);
+        searcher(tabla_mis_productos, buscador);
+        ordenar(tabla_mis_productos, ordenar_precio);
+    });
+}
+
 function generar_fila_producto(producto, body) {
     tbody = document.getElementById(body)
     
@@ -171,14 +225,7 @@ function generar_fila_producto(producto, body) {
         <p><b>Categoría:</b> ${categoria}</p>
         <p id = "estado_prod">${estado}</p>`
     
-    if (body == "body") {
-        boton = document.createElement("button");
-        boton.classList.add("btn", "boton_carrito");
-        boton.dataset.id = id;
-        boton.textContent = "Añadir al carrito";
-        boton.addEventListener("click", añadir_carrito);
-    }
-    else {
+    if (body == "body_carrito") {
         boton = document.createElement("button");
         boton.classList.add("btn", "boton_comprar");
         boton.dataset.id = id;
@@ -191,7 +238,23 @@ function generar_fila_producto(producto, body) {
         borrar.textContent = "Quitar";
         borrar.addEventListener("click", eliminar_del_carrito); 
         descripcion.appendChild(borrar);
-    };
+    }
+    else if (body == "body") {
+        boton = document.createElement("button");
+        boton.classList.add("btn", "boton_carrito");
+        boton.dataset.id = id;
+        boton.textContent = "Añadir al carrito";
+        boton.addEventListener("click", añadir_carrito);
+    }
+    else {
+        boton = document.createElement("button");
+        boton.classList.add("btn", "boton_editar");
+        boton.dataset.id = id;
+        boton.textContent = "Editar producto";
+        boton.addEventListener("click", () => {
+            window.location.href = `editar_producto.html?id=${id}`
+        });
+    }
 
     if (estado !== "En venta") {
         boton.disabled = true;
@@ -248,7 +311,8 @@ function eliminar_del_carrito(param) {
         // Si es un Event, obtenemos el id del botón
         const boton = param.target;
         productoId = boton.dataset.id;
-    } else {
+    } 
+    else {
         // Si no, asumimos que es el id directamente
         productoId = param;
     }
@@ -288,3 +352,64 @@ function comprar(event) {
     });
 }
 
+function editar_producto() {
+    token = localStorage.getItem("token")
+    id = new URLSearchParams(window.location.search).get("id")
+
+    fetch(`https://practicaprogramacionweb.duckdns.org/products/${id}`, {
+            method: 'GET',
+            headers: {
+                "accept": "/",
+                "Authorization": `Bearer ${token}`,
+            },
+        })
+
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`El producto con id ${id} no se encuentra.`);
+            }
+            return response.json();
+        })
+
+        .then(producto => {
+                nombre = producto.name
+                precio = producto.price
+                categoria = producto.category
+                imagen = producto.image
+
+                product_id = document.getElementById("id_producto").value = id
+                product_name = document.getElementById("name").value = nombre
+                price = document.getElementById("price").value = precio
+                category = document.getElementById("categoria").value = categoria
+                image = document.getElementById("image").value = imagen
+            })
+
+        
+}
+
+function editar_(event) {
+    token = localStorage.getItem("token")
+    
+    precio = document.getElementById("price").value
+    nombre = document.getElementById("name").value
+    categoria = document.getElementById("categoria").value
+    image = document.getElementById("image").value
+    usuario = localStorage.getItem("user")
+    id = document.getElementById("id_producto").value
+    fetch(`https://practicaprogramacionweb.duckdns.org/products/${id}`, {
+            method: 'PUT',
+            headers: {
+                "accept": "/",
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({ "name": nombre, "price": precio, "category": categoria, "image": image, "idUser": id })
+        })
+        .then(response => {
+            if (!response.ok) {
+                document.getElementById("error_msg").style.display = "block";
+                document.getElementById("error_msg").textContent = "Error al editar el producto.";
+                return; 
+            }
+            window.location.href = `mis_productos.html`;
+        });
+}
