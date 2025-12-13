@@ -36,13 +36,12 @@ function productos() {
 
     .then(productos_json => {
 
-        tbody = document.getElementById("body")
         productos_json.forEach(producto => {
-        generar_fila_producto(producto, tbody);
+        generar_fila_producto(producto, "body");
         })
 
         /*Inicializar la tabla */
-        tabla = new DataTable("#table", {
+        tabla_productos = new DataTable("#table", {
             info: false,
             pageLength: 25,
             lengthChange: false,
@@ -55,10 +54,12 @@ function productos() {
                 { targets: 0, orderable: false },
             ]
         })
+        buscador = document.getElementById("buscador_productos");
+        ordenar_precio = document.getElementById("orden_precio_productos");
 
-        filtrar_categoria(tabla);
-        searcher(tabla);
-        ordenar(tabla)
+        filtrar_categoria(tabla_productos);
+        searcher(tabla_productos, buscador);
+        ordenar(tabla_productos, ordenar_precio);
     });
 }
 
@@ -66,6 +67,12 @@ function carrito() {
     productos_carrito = JSON.parse(localStorage.getItem("carrito"))
     console.log(productos_carrito)
     token = localStorage.getItem("token")
+
+    if (productos_carrito == null || productos_carrito.length == 0) {
+        console.log("carrito vacio")
+        return;
+    }
+
     fetches = productos_carrito.map(producto_id =>
         fetch(`https://practicaprogramacionweb.duckdns.org/products/${producto_id}`, {
             method: 'GET',
@@ -79,21 +86,19 @@ function carrito() {
             if (!response.ok) {
                 throw new Error(`El producto con id ${producto_id} no se encuentra.`);
             }
-            if (response.ok) {
-                return response.json();
-            }
+            return response.json();
         })
 
         .then(producto => {
                 tbody = document.getElementById("body_carrito")
 
-                generar_fila_producto(producto, tbody);
+                generar_fila_producto(producto, "body_carrito");
             })
 
         .catch(error => {
             console.error('Error al obtener el producto:', error);
             productos_carrito = productos_carrito.filter(f => f !== producto_id);
-            return null;
+            localStorage.setItem("carrito", JSON.stringify(productos_carrito));
         })
     );
 
@@ -102,7 +107,7 @@ function carrito() {
         const tbody = document.getElementById("body_carrito");
 
         /*Inicializamos DataTable **solo después de agregar todas las filas*/
-        tabla2 = new DataTable("#table_carrito", {
+        tabla_carrito  = new DataTable("#table_carrito", {
             info: false,
             pageLength: 25,
             lengthChange: false,
@@ -115,14 +120,18 @@ function carrito() {
                 { targets: 0, orderable: false },
             ]
         });
+        buscador = document.getElementById("buscador_carrito");
+        ordenar_precio = document.getElementById("orden_precio_carrito");
 
-        filtrar_categoria(tabla2);
-        searcher(tabla2);
-        ordenar(tabla2);
+        filtrar_categoria(tabla_carrito);
+        searcher(tabla_carrito, buscador);
+        ordenar(tabla_carrito, ordenar_precio);
     });
 }
 
 function generar_fila_producto(producto, body) {
+    tbody = document.getElementById(body)
+    
     id = producto._id
     nombre = producto.name
     precio = producto.price
@@ -148,46 +157,48 @@ function generar_fila_producto(producto, body) {
         <p><b>Categoría:</b> ${categoria}</p>
         <p id = "estado_prod">${estado}</p>`
     
-    if (body == document.getElementById("body_carrito")) {
-        descripcion.innerHTML +=`<button class="btn btn-primary boton_comprar" data-id="${id}" onclick="comprar(event)">Comprar</button>`
+    if (body == "body") {
+    boton = document.createElement("button");
+    boton.classList.add("btn", "btn-primary", "boton_carrito");
+    boton.dataset.id = id;
+    boton.textContent = "añadir al carrito";
+    boton.addEventListener("click", añadir_carrito);
     }
     else {
-        descripcion.innerHTML +=`<button class="btn btn-primary boton_carrito" data-id="${id}" onclick="añadir_carrito(event)">Añadir al carrito</button>`
+    boton = document.createElement("button");
+    boton.classList.add("btn", "btn-primary", "boton_comprar");
+    boton.dataset.id = id;
+    boton.textContent = "Comprar";
+    boton.addEventListener("click", comprar);
     }
+    if (estado !== "En venta") {
+        boton.disabled = true;
+        boton.style.backgroundColor = "gray";
+        boton.textContent = "No disponible";
+    }
+
+    descripcion.appendChild(boton);
 
     tr.appendChild(imagen);
     tr.appendChild(descripcion);
     tr.appendChild(col_nombre);
     tr.appendChild(col_precio);
     tr.appendChild(col_categoria);
-    body.appendChild(tr);
+    tbody.appendChild(tr);
 }
 
-function searcher(tabla) {
+function searcher(tabla, buscador) {
     /*Convertir mi input en el buscador de data tables*/
-    let buscador;
-    
-    if (tabla == tabla2) {
-        buscador = $("#buscador_carrito");
-    } else {
-        buscador = $("#buscador");
-    }
 
-    buscador.on("input", function () {
+    buscador.addEventListener("input", function() {
         tabla.column(2).search(this.value).draw();
     });
 }
 
-function ordenar(tabla) {
+function ordenar(tabla, ordenar_precio) {
     /*Al pulsar el boton ordenar por precio ordena la tabla ascendente o descendente*/
+    
     asc = true
-    if (tabla == tabla2) {
-        ordenar_precio = document.getElementById("ordenPrecio_carrito")
-    } 
-    else {
-        ordenar_precio = document.getElementById("ordenPrecio")
-    }
-
     ordenar_precio.addEventListener("click", () => {
     tabla.order([3, asc ? "asc" : "desc"]).draw();
 
@@ -213,4 +224,8 @@ function filtrar_categoria(tabla) {
             tabla.draw();
         });
     });
+}
+
+function comprar(event) {
+    return;
 }
