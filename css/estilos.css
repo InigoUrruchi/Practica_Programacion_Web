@@ -81,6 +81,12 @@ td img {
     border: 1px solid orange;
 }
 
+.boton_borrar {
+    width: 150px;
+    height: 50px;
+    border: 1px solid orange;
+}
+
 #buscador_productos, #buscador_carrito {
     width: 100%;
     height: 50px;

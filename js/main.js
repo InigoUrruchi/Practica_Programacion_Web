@@ -23,6 +23,7 @@ $.fn.dataTable.ext.search.push(function (settings, data) {
 
 function productos() {
     token = localStorage.getItem("token")
+    user = localStorage.getItem("user")
 
     fetch("https://practicaprogramacionweb.duckdns.org/products", {
         method: 'GET',
@@ -35,15 +36,16 @@ function productos() {
     .then(response => response.json())
 
     .then(productos_json => {
-
         productos_json.forEach(producto => {
-        generar_fila_producto(producto, "body");
+            if (producto.idUser !== user) {
+                generar_fila_producto(producto, "body");
+            }
         })
 
         /*Inicializar la tabla */
         tabla_productos = new DataTable("#table", {
             info: false,
-            pageLength: 25,
+            pageLength: 10,
             lengthChange: false,
             responsive: true,
             columnDefs: [
@@ -69,9 +71,21 @@ function carrito() {
     token = localStorage.getItem("token")
 
     if (productos_carrito == null || productos_carrito.length == 0) {
-        console.log("carrito vacio")
-        return;
+        console.log("carrito vacio");
+        const tabla = document.getElementById("table_carrito");
+
+    if (tabla) {
+        tabla.style.display = "none";
     }
+    
+    const mensaje = document.createElement("p");
+    mensaje.innerText = "El carrito está vacío.";
+    mensaje.classList.add("fs-4", "text-muted");
+    const contenedorMensaje = document.getElementById("mensaje_carrito_vacio");
+    contenedorMensaje.appendChild(mensaje);
+    
+    return;
+}
 
     fetches = productos_carrito.map(producto_id =>
         fetch(`https://practicaprogramacionweb.duckdns.org/products/${producto_id}`, {
@@ -109,7 +123,7 @@ function carrito() {
         /*Inicializamos DataTable **solo después de agregar todas las filas*/
         tabla_carrito  = new DataTable("#table_carrito", {
             info: false,
-            pageLength: 25,
+            pageLength: 10,
             lengthChange: false,
             responsive: true,
             columnDefs: [
@@ -158,19 +172,27 @@ function generar_fila_producto(producto, body) {
         <p id = "estado_prod">${estado}</p>`
     
     if (body == "body") {
-    boton = document.createElement("button");
-    boton.classList.add("btn", "btn-primary", "boton_carrito");
-    boton.dataset.id = id;
-    boton.textContent = "añadir al carrito";
-    boton.addEventListener("click", añadir_carrito);
+        boton = document.createElement("button");
+        boton.classList.add("btn", "boton_carrito");
+        boton.dataset.id = id;
+        boton.textContent = "Añadir al carrito";
+        boton.addEventListener("click", añadir_carrito);
     }
     else {
-    boton = document.createElement("button");
-    boton.classList.add("btn", "btn-primary", "boton_comprar");
-    boton.dataset.id = id;
-    boton.textContent = "Comprar";
-    boton.addEventListener("click", comprar);
-    }
+        boton = document.createElement("button");
+        boton.classList.add("btn", "boton_comprar");
+        boton.dataset.id = id;
+        boton.textContent = "Comprar";
+        boton.addEventListener("click", comprar);
+
+        borrar = document.createElement("button");
+        borrar.classList.add("btn", "btn-danger", "boton_borrar");
+        borrar.dataset.id = id;
+        borrar.textContent = "Quitar";
+        borrar.addEventListener("click", eliminar_del_carrito); 
+        descripcion.appendChild(borrar);
+    };
+
     if (estado !== "En venta") {
         boton.disabled = true;
         boton.style.backgroundColor = "gray";
@@ -209,6 +231,7 @@ function ordenar(tabla, ordenar_precio) {
     });
 }
 
+/*Añadir un producto al carrito*/
 function añadir_carrito(event) {
     const boton = event.target;
     carrito = JSON.parse(localStorage.getItem("carrito")) || [];
@@ -216,6 +239,26 @@ function añadir_carrito(event) {
         carrito.push(boton.dataset.id);
         localStorage.setItem("carrito", JSON.stringify(carrito));
     }
+}
+
+/*Eliminar un producto del carrito*/
+function eliminar_del_carrito(param) {
+
+    if (param instanceof Event) {
+        // Si es un Event, obtenemos el id del botón
+        const boton = param.target;
+        productoId = boton.dataset.id;
+    } else {
+        // Si no, asumimos que es el id directamente
+        productoId = param;
+    }
+
+    carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    if (carrito.includes(boton.dataset.id)) {
+        carrito = carrito.filter(id => id !== boton.dataset.id);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+    }
+    location.reload();
 }
 
 function filtrar_categoria(tabla) {
@@ -227,5 +270,21 @@ function filtrar_categoria(tabla) {
 }
 
 function comprar(event) {
-    return;
+    const boton = event.target;
+    console.log(boton.dataset.id)
+    fetch(`https://practicaprogramacionweb.duckdns.org/products/buy/${boton.dataset.id}`, {
+        method: 'POST',
+            headers: {
+                "accept": "/",
+                "Authorization": `Bearer ${token}`,
+            },
+})
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error al comprar el producto con id ${boton.dataset.id}.`);
+            }
+        eliminar_del_carrito(boton.dataset.id);
+        location.reload();
+    });
 }
+
