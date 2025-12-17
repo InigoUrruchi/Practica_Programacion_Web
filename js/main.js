@@ -144,7 +144,7 @@ function carrito() {
 
 function mis_productos() {
     token = localStorage.getItem("token")
-    user = localStorage.getItem("user")
+    email = localStorage.getItem("email")
 
     fetch("https://practicaprogramacionweb.duckdns.org/products", {
         method: 'GET',
@@ -157,7 +157,8 @@ function mis_productos() {
     .then(response => response.json())
 
     .then(productos_json => {
-        productos_usuario = productos_json.filter(producto => producto.idUser == user);
+        productos_usuario = productos_json.filter(producto => producto.idUser == email);
+        console.log(productos_usuario)
         
         if (productos_usuario.length == 0) {
             const tabla = document.getElementById("table_mis_productos");
@@ -225,30 +226,39 @@ function generar_fila_producto(producto, body) {
         <p><b>Categoría:</b> ${categoria}</p>
         <p id = "estado_prod">${estado}</p>`
     
-    if (body == "body_carrito") {
-        boton = document.createElement("button");
-        boton.classList.add("btn", "boton_comprar");
-        boton.dataset.id = id;
-        boton.textContent = "Comprar";
-        boton.addEventListener("click", comprar);
+    borrar = null;
 
+    if (body == "body_carrito") {
         borrar = document.createElement("button");
-        borrar.classList.add("btn", "btn-danger", "boton_borrar");
+        borrar.classList.add("btn", "boton");
+        borrar.style.backgroundColor = "red"
         borrar.dataset.id = id;
         borrar.textContent = "Quitar";
         borrar.addEventListener("click", eliminar_del_carrito); 
-        descripcion.appendChild(borrar);
+
+        boton = document.createElement("button");
+        boton.classList.add("btn", "boton");
+        boton.dataset.id = id;
+        boton.textContent = "Comprar";
+        boton.addEventListener("click", comprar);
     }
     else if (body == "body") {
         boton = document.createElement("button");
-        boton.classList.add("btn", "boton_carrito");
+        boton.classList.add("btn", "boton");
         boton.dataset.id = id;
         boton.textContent = "Añadir al carrito";
         boton.addEventListener("click", añadir_carrito);
     }
     else {
+        borrar = document.createElement("button");
+        borrar.classList.add("btn", "boton");
+        borrar.style.backgroundColor = "red"
+        borrar.dataset.id = id;
+        borrar.textContent = "Eliminar";
+        borrar.addEventListener("click", eliminar_producto); 
+
         boton = document.createElement("button");
-        boton.classList.add("btn", "boton_editar");
+        boton.classList.add("btn", "boton");
         boton.dataset.id = id;
         boton.textContent = "Editar producto";
         boton.addEventListener("click", () => {
@@ -263,6 +273,9 @@ function generar_fila_producto(producto, body) {
     }
 
     descripcion.appendChild(boton);
+    if (borrar){
+    descripcion.appendChild(borrar);
+    }
 
     tr.appendChild(imagen);
     tr.appendChild(descripcion);
@@ -377,11 +390,11 @@ function editar_producto() {
                 categoria = producto.category
                 imagen = producto.image
 
-                product_id = document.getElementById("id_producto").value = id
-                product_name = document.getElementById("name").value = nombre
-                price = document.getElementById("price").value = precio
-                category = document.getElementById("categoria").value = categoria
-                image = document.getElementById("image").value = imagen
+                document.getElementById("id_producto").value = id
+                document.getElementById("name").value = nombre
+                document.getElementById("price").value = precio
+                document.getElementById("categoria").value = categoria
+                document.getElementById("image").value = imagen
             })
 
         
@@ -390,19 +403,20 @@ function editar_producto() {
 function editar_(event) {
     token = localStorage.getItem("token")
     
-    precio = document.getElementById("price").value
+    precio = parseFloat(document.getElementById("price").value)
     nombre = document.getElementById("name").value
     categoria = document.getElementById("categoria").value
     image = document.getElementById("image").value
-    usuario = localStorage.getItem("user")
+    email = localStorage.getItem("email")
     id = document.getElementById("id_producto").value
     fetch(`https://practicaprogramacionweb.duckdns.org/products/${id}`, {
             method: 'PUT',
             headers: {
                 "accept": "/",
-                "content-type": "application/json"
+                "content-type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
-            body: JSON.stringify({ "name": nombre, "price": precio, "category": categoria, "image": image, "idUser": id })
+            body: JSON.stringify({ "name": nombre, "price": precio, "category": categoria, "image": image, "idUser": email })
         })
         .then(response => {
             if (!response.ok) {
@@ -413,3 +427,54 @@ function editar_(event) {
             window.location.href = `mis_productos.html`;
         });
 }
+
+function crear(event) {
+    token = localStorage.getItem("token")
+    precio = parseFloat(document.getElementById("price").value)
+    nombre = document.getElementById("name").value
+    categoria = document.getElementById("categoria").value
+    image = document.getElementById("image").value
+    email = localStorage.getItem("email")
+
+    fetch("https://practicaprogramacionweb.duckdns.org/products", {
+            method: 'POST',
+            headers: {
+                "accept": "/",
+                "content-type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({ "name": nombre, "price": precio, "category": categoria, "image": image, "idUser": email })
+        })
+
+        .then(response => {
+            if (!response.ok) {
+                document.getElementById("error_msg").style.display = "block";
+                document.getElementById("error_msg").textContent = "Error al crear el producto.";
+                return; 
+            }
+            window.location.href = `mis_productos.html`;
+        });
+}
+
+function eliminar_producto(event) {
+    const boton = event.target;
+    productoId = boton.dataset.id;
+    token = localStorage.getItem("token")
+
+    fetch(`https://practicaprogramacionweb.duckdns.org/products/${productoId}`, {
+            method: 'DELETE',
+            headers: {
+                "accept": "/",
+                "Authorization": `Bearer ${token}`,
+            },
+        })
+
+        .then(response => {
+            if (!response.ok) {
+                document.getElementById("error_msg").style.display = "block";
+                document.getElementById("error_msg").textContent = "Error al aleminar el producto.";
+                return; 
+            }
+            window.location.href = `mis_productos.html`;
+        });
+    }

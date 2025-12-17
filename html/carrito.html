@@ -27,7 +27,7 @@
         <div id="navbar-container"></div>
         <div class="contenedor_productos table-responsive">
             <div class="d-flex responsive" id="contenedor_filtros">
-                <div class="dropdown" id="filtro_categorias">
+                <div class="dropdown filtro" id="filtro_categorias">
                     <button id="dropdown" class="btn btn-secondary dropdown-toggle" type="button"
                         id="dropdownCategorias" data-bs-toggle="dropdown" aria-expanded="false">
                         Categorías
@@ -67,12 +67,12 @@
                     </ul>
                 </div>
                 <div id="busqueda">
-                    <input type="text" class="form-control" name="buscador_carrito" id="buscador_carrito">
+                    <input type="text" class="form-control buscador" name="buscador_carrito" id="buscador_carrito">
                 </div>
             </div>
 
-            <div id="ordenar_precio" class="d-flex">
-                <button id="orden_precio_carrito" class="btn btn-outline-primary btn-sm">Precio ↑</button>
+            <div class="d-flex">
+                <button id="orden_precio_carrito" class="btn btn-outline-primary btn-sm orden_precio">Precio ↑</button>
             </div>
 
             <div id="mensaje_carrito_vacio" class="text-center mt-4"></div>
