@@ -400,7 +400,7 @@ function editar_producto() {
         
 }
 
-function editar_(event) {
+function editar() {
     token = localStorage.getItem("token")
     
     precio = parseFloat(document.getElementById("price").value)
@@ -428,7 +428,7 @@ function editar_(event) {
         });
 }
 
-function crear(event) {
+function crear() {
     token = localStorage.getItem("token")
     precio = parseFloat(document.getElementById("price").value)
     nombre = document.getElementById("name").value
