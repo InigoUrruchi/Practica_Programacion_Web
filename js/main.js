@@ -33,36 +33,36 @@ function productos() {
         },
     })
 
-    .then(response => response.json())
+        .then(response => response.json())
 
-    .then(productos_json => {
-        productos_json.forEach(producto => {
-            if (producto.idUser !== user) {
-                generar_fila_producto(producto, "body");
-            }
-        })
+        .then(productos_json => {
+            productos_json.forEach(producto => {
+                if (producto.idUser !== user) {
+                    generar_fila_producto(producto, "body");
+                }
+            })
 
-        /*Inicializar la tabla */
-        tabla_productos = new DataTable("#table", {
-            info: false,
-            pageLength: 10,
-            lengthChange: false,
-            responsive: true,
-            columnDefs: [
-                { targets: 2, visible: false, searchable: true },
-                { targets: 3, visible: false, orderable: true },
-                { targets: 4, visible: false },
-                { targets: 1, orderData: [3] },
-                { targets: 0, orderable: false },
-            ]
-        })
-        buscador = document.getElementById("buscador_productos");
-        ordenar_precio = document.getElementById("orden_precio_productos");
+            /*Inicializar la tabla */
+            tabla_productos = new DataTable("#table", {
+                info: false,
+                pageLength: 10,
+                lengthChange: false,
+                responsive: true,
+                columnDefs: [
+                    { targets: 2, visible: false, searchable: true },
+                    { targets: 3, visible: false, orderable: true },
+                    { targets: 4, visible: false },
+                    { targets: 1, orderData: [3] },
+                    { targets: 0, orderable: false },
+                ]
+            })
+            buscador = document.getElementById("buscador_productos");
+            ordenar_precio = document.getElementById("orden_precio_productos");
 
-        filtrar_categoria(tabla_productos);
-        searcher(tabla_productos, buscador);
-        ordenar(tabla_productos, ordenar_precio);
-    });
+            filtrar_categoria(tabla_productos);
+            searcher(tabla_productos, buscador);
+            ordenar(tabla_productos, ordenar_precio);
+        });
 }
 
 function carrito() {
@@ -73,17 +73,17 @@ function carrito() {
     if (productos_carrito == null || productos_carrito.length == 0) {
         console.log("carrito vacio");
         const tabla = document.getElementById("table_carrito");
-    
+
         if (tabla) {
             tabla.style.display = "none";
         }
-    
-    const mensaje = document.createElement("p");
-    mensaje.innerText = "El carrito está vacío.";
-    mensaje.classList.add("fs-4", "text-muted");
-    const contenedorMensaje = document.getElementById("mensaje_carrito_vacio");
-    contenedorMensaje.appendChild(mensaje);
-    return;
+
+        const mensaje = document.createElement("p");
+        mensaje.innerText = "El carrito está vacío.";
+        mensaje.classList.add("fs-4", "text-muted");
+        const contenedorMensaje = document.getElementById("mensaje_carrito_vacio");
+        contenedorMensaje.appendChild(mensaje);
+        return;
     }
 
     fetches = productos_carrito.map(producto_id =>
@@ -95,24 +95,24 @@ function carrito() {
             },
         })
 
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`El producto con id ${producto_id} no se encuentra.`);
-            }
-            return response.json();
-        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`El producto con id ${producto_id} no se encuentra.`);
+                }
+                return response.json();
+            })
 
-        .then(producto => {
+            .then(producto => {
                 tbody = document.getElementById("body_carrito")
 
                 generar_fila_producto(producto, "body_carrito");
             })
 
-        .catch(error => {
-            console.error('Error al obtener el producto:', error);
-            productos_carrito = productos_carrito.filter(f => f !== producto_id);
-            localStorage.setItem("carrito", JSON.stringify(productos_carrito));
-        })
+            .catch(error => {
+                console.error('Error al obtener el producto:', error);
+                productos_carrito = productos_carrito.filter(f => f !== producto_id);
+                localStorage.setItem("carrito", JSON.stringify(productos_carrito));
+            })
     );
 
     /* Esperar a que todas las promesas terminen*/
@@ -120,7 +120,7 @@ function carrito() {
         const tbody = document.getElementById("body_carrito");
 
         /*Inicializamos DataTable **solo después de agregar todas las filas*/
-        tabla_carrito  = new DataTable("#table_carrito", {
+        tabla_carrito = new DataTable("#table_carrito", {
             info: false,
             pageLength: 10,
             lengthChange: false,
@@ -154,53 +154,53 @@ function mis_productos() {
         },
     })
 
-    .then(response => response.json())
+        .then(response => response.json())
 
-    .then(productos_json => {
-        productos_usuario = productos_json.filter(producto => producto.idUser == email);
-        console.log(productos_usuario)
-        
-        if (productos_usuario.length == 0) {
-            const tabla = document.getElementById("table_mis_productos");
-            if (tabla) {
-                tabla.style.display = "none";
+        .then(productos_json => {
+            productos_usuario = productos_json.filter(producto => producto.idUser == email);
+            console.log(productos_usuario)
+
+            if (productos_usuario.length == 0) {
+                const tabla = document.getElementById("table_mis_productos");
+                if (tabla) {
+                    tabla.style.display = "none";
+                }
+                const mensaje = document.getElementById("no_productos");
+                mensaje.style.display = "block";
+                return;
             }
-            const mensaje = document.getElementById("no_productos");
-            mensaje.style.display = "block";
-            return;
-        }
 
-        productos_usuario.forEach(producto => {
-            generar_fila_producto(producto, "body_mis_productos");
+            productos_usuario.forEach(producto => {
+                generar_fila_producto(producto, "body_mis_productos");
+            });
+
+
+            /*Inicializar la tabla */
+            tabla_mis_productos = new DataTable("#table_mis_productos", {
+                info: false,
+                pageLength: 10,
+                lengthChange: false,
+                responsive: true,
+                columnDefs: [
+                    { targets: 2, visible: false, searchable: true },
+                    { targets: 3, visible: false, orderable: true },
+                    { targets: 4, visible: false },
+                    { targets: 1, orderData: [3] },
+                    { targets: 0, orderable: false },
+                ]
+            })
+            buscador = document.getElementById("buscador_mis_productos");
+            ordenar_precio = document.getElementById("orden_precio_mis_productos");
+
+            filtrar_categoria(tabla_mis_productos);
+            searcher(tabla_mis_productos, buscador);
+            ordenar(tabla_mis_productos, ordenar_precio);
         });
-
-
-        /*Inicializar la tabla */
-        tabla_mis_productos = new DataTable("#table_mis_productos", {
-            info: false,
-            pageLength: 10,
-            lengthChange: false,
-            responsive: true,
-            columnDefs: [
-                { targets: 2, visible: false, searchable: true },
-                { targets: 3, visible: false, orderable: true },
-                { targets: 4, visible: false },
-                { targets: 1, orderData: [3] },
-                { targets: 0, orderable: false },
-            ]
-        })
-        buscador = document.getElementById("buscador_mis_productos");
-        ordenar_precio = document.getElementById("orden_precio_mis_productos");
-
-        filtrar_categoria(tabla_mis_productos);
-        searcher(tabla_mis_productos, buscador);
-        ordenar(tabla_mis_productos, ordenar_precio);
-    });
 }
 
 function generar_fila_producto(producto, body) {
     tbody = document.getElementById(body)
-    
+
     id = producto._id
     nombre = producto.name
     precio = producto.price
@@ -225,7 +225,7 @@ function generar_fila_producto(producto, body) {
         <p id = "precio_prod">${precio}$</p>
         <p><b>Categoría:</b> ${categoria}</p>
         <p id = "estado_prod">${estado}</p>`
-    
+
     borrar = null;
 
     if (body == "body_carrito") {
@@ -234,7 +234,7 @@ function generar_fila_producto(producto, body) {
         borrar.style.backgroundColor = "red"
         borrar.dataset.id = id;
         borrar.textContent = "Quitar";
-        borrar.addEventListener("click", eliminar_del_carrito); 
+        borrar.addEventListener("click", eliminar_del_carrito);
 
         boton = document.createElement("button");
         boton.classList.add("btn", "boton");
@@ -255,7 +255,7 @@ function generar_fila_producto(producto, body) {
         borrar.style.backgroundColor = "red"
         borrar.dataset.id = id;
         borrar.textContent = "Eliminar";
-        borrar.addEventListener("click", eliminar_producto); 
+        borrar.addEventListener("click", eliminar_producto);
 
         boton = document.createElement("button");
         boton.classList.add("btn", "boton");
@@ -273,8 +273,8 @@ function generar_fila_producto(producto, body) {
     }
 
     descripcion.appendChild(boton);
-    if (borrar){
-    descripcion.appendChild(borrar);
+    if (borrar) {
+        descripcion.appendChild(borrar);
     }
 
     tr.appendChild(imagen);
@@ -288,17 +288,17 @@ function generar_fila_producto(producto, body) {
 function searcher(tabla, buscador) {
     /*Convertir mi input en el buscador de data tables*/
 
-    buscador.addEventListener("input", function() {
+    buscador.addEventListener("input", function () {
         tabla.column(2).search(this.value).draw();
     });
 }
 
 function ordenar(tabla, ordenar_precio) {
     /*Al pulsar el boton ordenar por precio ordena la tabla ascendente o descendente*/
-    
+
     asc = true
     ordenar_precio.addEventListener("click", () => {
-    tabla.order([3, asc ? "asc" : "desc"]).draw();
+        tabla.order([3, asc ? "asc" : "desc"]).draw();
 
         /*Alternar icono*/
         ordenar_precio.innerText = asc ? "Precio ↑" : "Precio ↓";
@@ -324,7 +324,7 @@ function eliminar_del_carrito(param) {
         // Si es un Event, obtenemos el id del botón
         const boton = param.target;
         productoId = boton.dataset.id;
-    } 
+    }
     else {
         // Si no, asumimos que es el id directamente
         productoId = param;
@@ -351,18 +351,18 @@ function comprar(event) {
     console.log(boton.dataset.id)
     fetch(`https://practicaprogramacionweb.duckdns.org/products/buy/${boton.dataset.id}`, {
         method: 'POST',
-            headers: {
-                "accept": "/",
-                "Authorization": `Bearer ${token}`,
-            },
-})
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Error al comprar el producto con id ${boton.dataset.id}.`);
+        headers: {
+            "accept": "/",
+            "Authorization": `Bearer ${token}`,
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error al comprar el producto con id ${boton.dataset.id}.`);
             }
-        eliminar_del_carrito(boton.dataset.id);
-        location.reload();
-    });
+            eliminar_del_carrito(boton.dataset.id);
+            location.reload();
+        });
 }
 
 function editar_producto() {
@@ -370,12 +370,12 @@ function editar_producto() {
     id = new URLSearchParams(window.location.search).get("id")
 
     fetch(`https://practicaprogramacionweb.duckdns.org/products/${id}`, {
-            method: 'GET',
-            headers: {
-                "accept": "/",
-                "Authorization": `Bearer ${token}`,
-            },
-        })
+        method: 'GET',
+        headers: {
+            "accept": "/",
+            "Authorization": `Bearer ${token}`,
+        },
+    })
 
         .then(response => {
             if (!response.ok) {
@@ -385,24 +385,24 @@ function editar_producto() {
         })
 
         .then(producto => {
-                nombre = producto.name
-                precio = producto.price
-                categoria = producto.category
-                imagen = producto.image
+            nombre = producto.name
+            precio = producto.price
+            categoria = producto.category
+            imagen = producto.image
 
-                document.getElementById("id_producto").value = id
-                document.getElementById("name").value = nombre
-                document.getElementById("price").value = precio
-                document.getElementById("categoria").value = categoria
-                document.getElementById("image").value = imagen
-            })
+            document.getElementById("id_producto").value = id
+            document.getElementById("name").value = nombre
+            document.getElementById("price").value = precio
+            document.getElementById("categoria").value = categoria
+            document.getElementById("image").value = imagen
+        })
 
-        
+
 }
 
 function editar() {
     token = localStorage.getItem("token")
-    
+
     precio = parseFloat(document.getElementById("price").value)
     nombre = document.getElementById("name").value
     categoria = document.getElementById("categoria").value
@@ -410,19 +410,19 @@ function editar() {
     email = localStorage.getItem("email")
     id = document.getElementById("id_producto").value
     fetch(`https://practicaprogramacionweb.duckdns.org/products/${id}`, {
-            method: 'PUT',
-            headers: {
-                "accept": "/",
-                "content-type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify({ "name": nombre, "price": precio, "category": categoria, "image": image, "idUser": email })
-        })
+        method: 'PUT',
+        headers: {
+            "accept": "/",
+            "content-type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ "name": nombre, "price": precio, "category": categoria, "image": image, "idUser": email })
+    })
         .then(response => {
             if (!response.ok) {
                 document.getElementById("error_msg").style.display = "block";
                 document.getElementById("error_msg").textContent = "Error al editar el producto.";
-                return; 
+                return;
             }
             window.location.href = `mis_productos.html`;
         });
@@ -437,20 +437,20 @@ function crear() {
     email = localStorage.getItem("email")
 
     fetch("https://practicaprogramacionweb.duckdns.org/products", {
-            method: 'POST',
-            headers: {
-                "accept": "/",
-                "content-type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify({ "name": nombre, "price": precio, "category": categoria, "image": image, "idUser": email })
-        })
+        method: 'POST',
+        headers: {
+            "accept": "/",
+            "content-type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ "name": nombre, "price": precio, "category": categoria, "image": image, "idUser": email })
+    })
 
         .then(response => {
             if (!response.ok) {
                 document.getElementById("error_msg").style.display = "block";
                 document.getElementById("error_msg").textContent = "Error al crear el producto.";
-                return; 
+                return;
             }
             window.location.href = `mis_productos.html`;
         });
@@ -462,19 +462,109 @@ function eliminar_producto(event) {
     token = localStorage.getItem("token")
 
     fetch(`https://practicaprogramacionweb.duckdns.org/products/${productoId}`, {
-            method: 'DELETE',
-            headers: {
-                "accept": "/",
-                "Authorization": `Bearer ${token}`,
-            },
-        })
+        method: 'DELETE',
+        headers: {
+            "accept": "/",
+            "Authorization": `Bearer ${token}`,
+        },
+    })
 
         .then(response => {
             if (!response.ok) {
                 document.getElementById("error_msg").style.display = "block";
                 document.getElementById("error_msg").textContent = "Error al aleminar el producto.";
-                return; 
+                return;
             }
             window.location.href = `mis_productos.html`;
         });
+}
+
+function cargar_estadisticas() {
+    token = localStorage.getItem("token")
+    fetch("https://practicaprogramacionweb.duckdns.org/products", {
+        method: 'GET',
+        headers: {
+            "accept": "/",
+            "Authorization": `Bearer ${token}`,
+        },
+    })
+        .then(response => response.json())
+
+        .then(data => {
+            productos_vendidos = data.filter(producto => producto.state == "Comprado").length;
+            productos_no_vendidos = data.filter(producto => producto.state == "En venta").length;
+
+            const grafica = document.getElementById('grafica').getContext('2d');
+
+                grafica = new Chart(grafica, {
+                type: 'bar', // también puede ser 'pie' o 'doughnut'
+                data: {
+                    labels: ['Vendidos', 'No vendidos'],
+                    datasets: [{
+                        label: 'Cantidad de productos',
+                        data: [productos_vendidos, productos_no_vendidos],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 136, 0, 1)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 179, 0, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+    fetch("https://practicaprogramacionweb.duckdns.org/users/coords", {
+        method: 'GET',
+        headers: {
+            "accept": "/",
+            "Authorization": `Bearer ${token}`,
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                const map = new ol.Map({
+                    target: 'map',
+                    layers: [
+                        new ol.layer.Tile({ source: new ol.source.OSM() })
+                    ],
+                    view: new ol.View({
+                        center: ol.proj.fromLonLat([-3.70256, 40.4165]),
+                        zoom: 2
+                    })
+                });
+
+                // Añadir marcadores
+        data.forEach(usuario => {
+            if (usuario.latitude !== undefined && usuario.longitude !== undefined) {
+                const pin = document.createElement('i');
+                pin.className = 'pin fa-solid fa-map-pin';
+                pin.style.color = "#f50f4c";
+                pin.title = usuario.email || "";
+
+                const marker = new ol.Overlay({
+                    position: ol.proj.fromLonLat([usuario.longitude, usuario.latitude]),
+                    positioning: 'bottom-center',
+                    element: pin,
+                    stopEvent: false
+                });
+
+                map.addOverlay(marker);
+            }
+        });
     }
+})
+}
