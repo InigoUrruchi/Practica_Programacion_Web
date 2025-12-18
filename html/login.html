@@ -15,7 +15,7 @@
 </head>
 
 <body class="d-flex align-items-center vh-100 m-15">
-    <div class="container w-25 h-50 p-5 rounded form">
+    <div class="container form">
         <form onsubmit="iniciar_sesion(event)">
             <div class="mx-auto">
                 <label class="form-label">Correo electronico</label>
@@ -27,13 +27,12 @@
                 <input id="contraseña" type="password" class="form-control" placeholder="Contraseña" required>
             </div>
 
-            <div class="mx-auto mt-3">
-                <input type="checkbox" class="form-check-input" required>
-                <label class="form-check-label">Mantener sesión iniciadada</label>
+            <div>
+                <p class="mt-3">¿No tienes una cuenta? <a href="register.html">Regístrarse</a></p>
             </div>
 
             <div style="display:flex; justify-content: center;" class="mt-3">
-                <button class="btn btn-primary" onclick="iniciar_sesion()">Iniciar sesión</button>
+                <button class="btn btn-primary boton" onclick="iniciar_sesion()">Iniciar sesión</button>
             </div>
         </form>
     </div>

@@ -1,10 +1,18 @@
 .form {
+    display: flex;
+    flex-direction: column;
     background-color: rgb(70, 68, 68);
     border-radius: 15px;
     padding: 40px;
     border: 2px solid orange;
+    width: 30%;
+    min-height: 50%;
     color: white;
+}
 
+a {
+    color: orange;
+    text-decoration: underline;
 }
 
 html, body {
